@@ -2,7 +2,9 @@ let table = document.getElementById("table");
 table.innerText = "Content Not Uploaded Yet !!";
 const input = document.getElementById("input");
 let tableInner = ""
+
 input.addEventListener("change", async () => {
+  
   const fr = new FileReader();
   const fileType = input?.files[0].type;
   console.log(input?.files[0]);
@@ -15,7 +17,7 @@ input.addEventListener("change", async () => {
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       )
     ) {
-      table.innerText=""
+      table.innerText = "";
     let r = fr.result.split("\n").map((e) => {
       return e.split(",");
     });
@@ -48,8 +50,10 @@ input.addEventListener("change", async () => {
       }
     });
     } else {
-      alert("Invalid Type");
+      table.innerHTML =`<p class="text-xl text-red-200">Upload Valid Type Data !!</p>` ;
+      
     }
   };
   fr.readAsText(input.files[0]);
+  input.value=""
 });
