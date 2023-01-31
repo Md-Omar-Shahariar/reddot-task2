@@ -2,10 +2,24 @@ let table = document.getElementById("table");
 table.innerText = "Content Not Uploaded Yet !!";
 const input = document.getElementById("input");
 let tableInner = "";
+const handleBlur = (event) => {
+  console.log(1);
+  const id = event.id;
+  // console.log(event);
+  // const data = document.getElementById(`${id}`);
+  // data.removeAttribute("onblur");
+  // data.setAttribute("onclick", "handleClick(this)");
+  // data.innerHTML = `<td onclick="handleClick(this)" id="${id}" class ="border border-slate-600">${e}</td>`;
+  console.log(event);
+};
 const handleClick = (event) => {
   const id = event.id;
+  // console.log(event);
   const data = document.getElementById(`${id}`);
-  data.innerHTML = `<input id=${event.id} value="${event.innerText}" type="text"/>`;
+  data.removeAttribute("onclick");
+  data.setAttribute("onblur", "handleBlur(this)");
+  data.innerHTML = `<input id=${event.id}  type="text"/>`;
+  console.log(event);
 };
 
 input.addEventListener("change", async () => {
