@@ -1,37 +1,55 @@
 let table = document.getElementById("table");
 table.innerText = "Content Not Uploaded Yet !!";
 const input = document.getElementById("input");
+let tableInner = ""
 input.addEventListener("change", async () => {
   const fr = new FileReader();
   const fileType = input?.files[0].type;
   console.log(input?.files[0]);
 
   fr.onloadend = (e) => {
-    let read = fr.result;
-    // if (
-    //   fileType.includes("text/csv") ||
-    //   fileType.includes(
-    //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    //   )
-    // ) {
+    
+    if (
+      fileType.includes("text/csv") ||
+      fileType.includes(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      )
+    ) {
+      table.innerText=""
     let r = fr.result.split("\n").map((e) => {
       return e.split(",");
     });
-    r?.forEach((e) => {
-      let m = e
+   
+    r?.forEach((e, index) => {
+      let m;
+      if(index==0){
+         m = e
         .map((e) => {
-          return `<td>${e}</td>`;
+          return `<th class ="border border-slate-600">${e}</th>`;
         })
         .join("");
+      }
+      else{
+         m = e
+        .map((e) => {
+          return `<td class ="border border-slate-600">${e}</td>`;
+        })
+        .join("");
+      }
+      
       const ce = document.createElement("tr");
+      ce.setAttribute("class", "odd:bg-gray-300");
       ce.innerHTML = m;
       if (ce.innerHTML !== "") {
+
+        tableInner +=ce
+        
         table.append(ce);
       }
     });
-    // } else {
-    //   alert("Invalid Type");
-    // }
+    } else {
+      alert("Invalid Type");
+    }
   };
   fr.readAsText(input.files[0]);
 });
