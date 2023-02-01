@@ -78,6 +78,15 @@ input.addEventListener("change", async () => {
   console.log(input?.files[0]);
 
   fr.onloadend = (e) => {
+    var data = new Uint8Array(e.target.result);
+    var workbook = XLSX.read(data, {
+      type: "array",
+    });
+    var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    // header: 1 instructs xlsx to create an 'array of arrays'
+    var result = XLSX.utils.sheet_to_json(firstSheet, {
+      header: 1,
+    });
     if (
       fileType.includes("text/csv") ||
       fileType.includes(
@@ -85,40 +94,70 @@ input.addEventListener("change", async () => {
       )
     ) {
       table.innerText = "";
-      let r = fr.result.split("\n").map((e) => {
-        return e.split(",");
+      console.log(result);
+      // let r = result.split("\n").map((e) => {
+      //   return e.split(",");
+      // });
+      let maxLength = -1;
+      result.forEach((e) => {
+        if (e.length > maxLength) {
+          maxLength = e.length;
+        }
       });
 
-      r?.forEach((e, index) => {
+      result.forEach((singleResult, index) => {
+        let range = math.range(0, maxLength);
         let m;
+        console.log(singleResult);
         if (index == 0) {
-          m = e
-            .map((e) => {
-              return `<th class ="border border-slate-600">${e}</th>`;
+          m = singleResult
+            .map((e, i) => {
+              console.log(e);
+
+              {
+                if (e && singleResult[i] == null) {
+                  return `<th class ="border border-slate-600">empty</th>`;
+                } else {
+                  return `<th class ="border border-slate-600">${e}</th>`;
+                }
+              }
             })
             .join("");
         } else {
-          m = e
+          m = singleResult
             .map((e, i) => {
-              return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">${e}</td>`;
+              console.log(i);
+              console.log(e);
+              {
+                {
+                  if (e && singleResult[i].anoxi == "\0") {
+                    return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">empty</td>`;
+                  } else {
+                    return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">${e}</td>`;
+                  }
+                }
+              }
             })
             .join("");
         }
-
         const ce = document.createElement("tr");
         ce.setAttribute("class", "odd:bg-gray-300");
         ce.innerHTML = m;
         if (ce.innerHTML !== "") {
           tableInner += ce;
-
           table.append(ce);
         }
       });
     } else {
       table.innerHTML = `<p class="text-xl text-red-200">Upload Valid Type Data !!</p>`;
+      //
+      // console.log(data);
+
+      // console.log(result);
     }
   };
-  fr.readAsText(input.files[0]);
+  fr.readAsArrayBuffer(input.files[0]);
+  console.log(fr);
   input.value = "";
   const a = document.createElement("a");
   a.setAttribute(
