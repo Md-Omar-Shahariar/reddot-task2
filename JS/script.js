@@ -112,10 +112,12 @@ input.addEventListener("change", async () => {
         if (index == 0) {
           m = singleResult
             .map((e, i) => {
+
+              
               console.log(e);
 
               {
-                if (e && singleResult[i] == null) {
+                if (singleResult[]) {
                   return `<th class ="border border-slate-600">empty</th>`;
                 } else {
                   return `<th class ="border border-slate-600">${e}</th>`;
