@@ -1,28 +1,78 @@
+const htmlToCsv = () => {
+  let csv = [];
+  let tr = document.querySelectorAll("tr");
+  for (let i = 0; i < tr.length; i++) {
+    // console.log(tr[i]);
+    let cols = tr[i].querySelectorAll("td,th");
+    let csvRow = [];
+    for (j = 0; j < cols.length; j++) {
+      csvRow.push(cols[j].innerHTML);
+    }
+    csv.push(csvRow.join(","));
+  }
+  // console.log(tr);
+  console.log(csv.join("\n"));
+  let blob = new Blob([csv.join("\n")], { type: "text/csv" });
+  const a = document.getElementById("a");
+  a.href = URL.createObjectURL(blob);
+};
 let table = document.getElementById("table");
+
 table.innerText = "Content Not Uploaded Yet !!";
 const input = document.getElementById("input");
 let tableInner = "";
 const handleBlur = (event) => {
-  console.log(1);
-  const id = event.id;
-  // console.log(event);
-  // const data = document.getElementById(`${id}`);
-  // data.removeAttribute("onblur");
-  // data.setAttribute("onclick", "handleClick(this)");
-  // data.innerHTML = `<td onclick="handleClick(this)" id="${id}" class ="border border-slate-600">${e}</td>`;
-  console.log(event);
-};
-const handleClick = (event) => {
-  const id = event.id;
+  let val = event.value;
+
+  function checkVal() {
+    if (!val) {
+      // document.getElementById(`${event.id}`).focus();
+      const value = prompt("Enter a Value");
+      // alert("enter a value");
+      val = value;
+    } else {
+      checkVal();
+    }
+  }
+  if (!val) {
+    checkVal();
+  }
+
+  const id = event.id.slice(0, event.id.length - 1);
+  console.log(id);
+
   // console.log(event);
   const data = document.getElementById(`${id}`);
+  data.removeAttribute("onblur");
+  data.setAttribute("onclick", "handleClick(this)");
+  data.innerText = val;
+  // console.log(event);
+};
+// const select = (id) => {
+//   if (document.getElementById(`"${id}i"`)) {
+//     console.log(document.getElementById(`"${id}i"`));
+//     document.getElementById(`"${id}i"`).focus();
+//   }
+// };
+// if (document.getElementById(`"${id}i"`)) {
+// }
+const handleClick = async (event) => {
+  const id = event?.id;
+  // console.log(event);
+  const data = document.getElementById(`${id}`);
+
   data.removeAttribute("onclick");
-  data.setAttribute("onblur", "handleBlur(this)");
-  data.innerHTML = `<input id=${event.id}  type="text"/>`;
-  console.log(event);
+
+  data.innerHTML = `<input id="${id}i" onblur="handleBlur(this)" type="text"/>`;
+  console.log(data);
+  // select(id);
 };
 
 input.addEventListener("change", async () => {
+  if (document.getElementById("a")) {
+    const child = document.getElementById("a");
+    child.parentNode.removeChild(child);
+  }
   const fr = new FileReader();
   const fileType = input?.files[0].type;
   console.log(input?.files[0]);
@@ -70,4 +120,13 @@ input.addEventListener("change", async () => {
   };
   fr.readAsText(input.files[0]);
   input.value = "";
+  const a = document.createElement("a");
+  a.setAttribute(
+    "class",
+    "mt-5 ml-auto px-6 py-3 bg-gray-300 font-bold  hover:bg-red-300"
+  );
+  a.setAttribute("id", "a");
+  a.innerText = "Download";
+  a.setAttribute("onclick", "htmlToCsv()");
+  document.getElementById("htmltocsv").append(a);
 });

@@ -6,19 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DYNAMIC TABLE</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
   </head>
   <body class="m-0 p-0 bg-gray-100 font-mono">
-    <section class="min-h-screen w-full flex flex-col pt-20">
+    <section id="htmltocsv" class="min-h-screen w-full flex flex-col pt-20">
       <div id="fileupload" class="mx-auto">
-        
-          <input type="file" class="font-bold drop-shadow-lg bg-gray-300 px-10 py-5 border border-2 border-sky-500 rounded text-center cursor-pointer" id="input" class="mb-5" />
-          
-        
+        <input
+          type="file"
+          class="font-bold drop-shadow-lg bg-gray-300 px-10 py-5 border border-2 border-sky-500 rounded text-center cursor-pointer"
+          id="input"
+          class="mb-5"
+        />
       </div>
       <div id="table" class="mx-auto mt-20">
-        <table class="border-collapse border border-slate-500 "></table>
+        <table class="border-collapse border border-slate-500"></table>
       </div>
     </section>
     <script src="../Js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/read-excel-file@5.5.3/bundle/read-excel-file.min.js"></script>
   </body>
 </html>
