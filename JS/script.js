@@ -1,3 +1,10 @@
+function ExportToExcel(type, fn, dl) {
+  var elt = document.getElementById("table");
+  var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+  return dl
+    ? XLSX.write(wb, { bookType: type, bookSST: true, type: "base64" })
+    : XLSX.writeFile(wb, fn || "MySheetName." + "csv");
+}
 // function exportTableToExcel(tableID, filename = "") {
 //   var downloadLink;
 //   var dataType = "application/vnd.ms-excel";
@@ -35,27 +42,29 @@
 //   XLSX.write(excelFile, { bookType: type, bookSST: true, type: "base64" });
 //   XLSX.writeFile(excelFile, "ExportedFile:HTMLTableToExcel" + type);
 // }
-const htmlToCsv = () => {
-  // let table = document.querySelector("table");
-  // let table2excel = new table2excel();
-  // table2excel.export(document.querySelectorAll("table"));
-  let csv = [];
-  let tr = document.querySelectorAll("tr");
-  for (let i = 0; i < tr.length; i++) {
-    // console.log(tr[i]);
-    let cols = tr[i].querySelectorAll("td,th");
-    let csvRow = [];
-    for (j = 0; j < cols.length; j++) {
-      csvRow.push(cols[j].innerHTML);
-    }
-    csv.push(csvRow.join(","));
-  }
-  // console.log(tr);
-  console.log(csv.join("\n"));
-  let blob = new Blob([csv.join("\n")], { type: "text/csv" });
-  const a = document.getElementById("a");
-  a.href = URL.createObjectURL(blob);
-};
+// const htmlToCsv = () => {
+//   // let table = document.querySelector("table");
+//   // let table2excel = new table2excel();
+//   // table2excel.export(document.querySelectorAll("table"));
+//   let csv = [];
+//   let tr = document.querySelectorAll("tr");
+//   for (let i = 0; i < tr.length; i++) {
+//     // console.log(tr[i]);
+//     let cols = tr[i].querySelectorAll("td,th");
+//     let csvRow = [];
+//     for (j = 0; j < cols.length; j++) {
+//       cols[j].innerHTML
+//         ? csvRow.push(cols[j].innerHTML)
+//         : csvRow.push((cols[j].innerHTML = ""));
+//     }
+//     csv.push(csvRow);
+//   }
+//   // console.log(tr);
+//   // console.log(csv.join("\n"));
+//   let blob = new Blob([csv], { type: "text/csv" });
+//   const a = document.getElementById("a");
+//   a.href = URL.createObjectURL(blob);
+// };
 let table = document.getElementById("table");
 
 table.innerText = "Content Not Uploaded Yet !!";
@@ -396,7 +405,8 @@ input.addEventListener("change", async () => {
   a.setAttribute("id", "a");
   a.innerText = "Download";
   // a.setAttribute("onclick", "htmlTableToExcel('csv')");
-  a.setAttribute("onclick", "exportTableToExcel('table')");
+  // a.setAttribute("onclick", "htmlToCsv()");
+  a.setAttribute("onclick", "ExportToExcel('xlsx')");
 
   // exportTableToExcel('tblData')
   document.getElementById("htmltocsv").append(a);
