@@ -1,4 +1,44 @@
+// function exportTableToExcel(tableID, filename = "") {
+//   var downloadLink;
+//   var dataType = "application/vnd.ms-excel";
+//   var tableSelect = document.getElementById(tableID);
+//   var tableHTML = tableSelect.outerHTML.replace(/ /g, "%20");
+
+//   // Specify file name
+//   filename = filename ? filename + ".csv" : "excel_data.csv";
+
+//   // Create download link element
+//   downloadLink = document.createElement("a");
+
+//   document.body.appendChild(downloadLink);
+
+//   if (navigator.msSaveOrOpenBlob) {
+//     var blob = new Blob(["\ufeff", tableHTML], {
+//       type: dataType,
+//     });
+//     navigator.msSaveOrOpenBlob(blob, filename);
+//   } else {
+//     // Create a link to the file
+//     downloadLink.href = "data:" + dataType + ", " + tableHTML;
+
+//     // Setting the file name
+//     downloadLink.download = filename;
+
+//     //triggering the function
+//     downloadLink.click();
+//   }
+// }
+
+// function htmlTableToExcel(type) {
+//   var data = document.getElementById("table");
+//   var excelFile = XLSX.utils.table_to_book(data, { sheet: "sheet1" });
+//   XLSX.write(excelFile, { bookType: type, bookSST: true, type: "base64" });
+//   XLSX.writeFile(excelFile, "ExportedFile:HTMLTableToExcel" + type);
+// }
 const htmlToCsv = () => {
+  // let table = document.querySelector("table");
+  // let table2excel = new table2excel();
+  // table2excel.export(document.querySelectorAll("table"));
   let csv = [];
   let tr = document.querySelectorAll("tr");
   for (let i = 0; i < tr.length; i++) {
@@ -78,79 +118,266 @@ input.addEventListener("change", async () => {
   console.log(input?.files[0]);
 
   fr.onloadend = (e) => {
-    var data = new Uint8Array(e.target.result);
-    var workbook = XLSX.read(data, {
-      type: "array",
-    });
-    var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    // header: 1 instructs xlsx to create an 'array of arrays'
-    var result = XLSX.utils.sheet_to_json(firstSheet, {
-      header: 1,
-    });
     if (
-      fileType.includes("text/csv") ||
+      // fileType.includes("text/csv") ||
       fileType.includes(
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      )
+      ) ||
+      fileType.includes("text/csv")
     ) {
+      var data = new Uint8Array(e.target.result);
+      var workbook = XLSX.read(data, {
+        type: "array",
+      });
+      var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      // header: 1 instructs xlsx to create an 'array of arrays'
+      var result = XLSX.utils.sheet_to_json(firstSheet, {
+        header: 1,
+      });
       table.innerText = "";
       console.log(result);
       // let r = result.split("\n").map((e) => {
       //   return e.split(",");
       // });
-      let maxLength = -1;
-      result.forEach((e) => {
-        if (e.length > maxLength) {
-          maxLength = e.length;
-        }
-      });
+      let max = -1;
 
       result.forEach((singleResult, index) => {
-        let range = math.range(0, maxLength);
+        result.forEach((a, i) => {
+          if (a.length > max) {
+            max = a.length;
+          }
+        });
         let m;
-        console.log(singleResult);
+        let html = "";
+        let temp = [...Array(max).keys()];
+
+        // console.log(singleResult);
         if (index == 0) {
-          m = singleResult
-            .map((e, i) => {
+          console.log(max);
+          temp.forEach((en) => {
+            if (singleResult[en]) {
+              html += `<th class ="border border-slate-600 p-3">${singleResult[en]}</th>`;
+            } else {
+              html += `<th class="border border-slate-600 p-3"></th>`;
+            }
+            console.log(singleResult[en]);
+          });
 
-              
-              console.log(e);
+          m = singleResult.map((e, i) => {
+            // if (temp.includes(i)) {
+            //   temp = temp.filter(function (item) {
+            //     return item !== i;
+            //   });
+            //   // console.log(temp, "Header");
+            // }
+            // console.log(e);
+            // console.log(i);
+            // if (e[i]) {
+            //   return `<th class ="border border-slate-600">${e}</th>`;
+            // } else {
+            //   return `<th class ="border border-slate-600">empty</th>`;
+            // }
+          });
+          // .join("");
+          // temp.map((em, i) => {
+          //   console.log(em);
+          //   // console.log(temp[++i]);
+          //   if (temp[++i] - em == 1) {
+          //     console.log(em);
+          //     // console.log(em - temp[i++]);
+          //     html += `<th class="border border-slate-600">empty</th>`;
+          //     // console.log(html);
+          //   } else {
+          //     html += `<th class ="border border-slate-600">${
+          //       singleResult[++em]
+          //     }</th>`;
+          //   }
+          // });
 
-              {
-                if (singleResult[]) {
-                  return `<th class ="border border-slate-600">empty</th>`;
-                } else {
-                  return `<th class ="border border-slate-600">${e}</th>`;
-                }
-              }
-            })
-            .join("");
+          console.log(html);
+          console.log(temp);
         } else {
-          m = singleResult
-            .map((e, i) => {
-              console.log(i);
-              console.log(e);
-              {
-                {
-                  if (e && singleResult[i].anoxi == "\0") {
-                    return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">empty</td>`;
-                  } else {
-                    return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">${e}</td>`;
-                  }
-                }
-              }
-            })
-            .join("");
+          // let temp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+          m = singleResult.map((e, i) => {
+            // if (temp.includes(i)) {
+            //   temp = temp.filter(function (item) {
+            //     return item !== i;
+            //   });
+            //   // console.log(temp);
+            // }
+            // console.log(e);
+            // {
+            //   {
+            //     if (!e[i]) {
+            //       return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">empty</td>`;
+            //     } else {
+            //       return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">${e}</td>`;
+            //     }
+            //   }
+            // }
+          });
+          // .join("");
+
+          // let temp = [...Array(max).keys()];
+          temp.forEach((en) => {
+            if (singleResult[en]) {
+              html += `<td onclick="handleClick(this)" id="${index}${en}" class ="border border-slate-600 p-3">${singleResult[en]}</td>`;
+            } else {
+              html += `<td onclick="handleClick(this)" id="${index}${en}" class ="border border-slate-600 p-3"></td>`;
+            }
+            console.log(singleResult[en]);
+          });
+          // temp.map((em, i) => {
+          //   console.log(em);
+          //   // console.log(temp[++i]);
+          //   if (temp[++i] - em == 1) {
+          //     console.log(em);
+          //     // console.log(em - temp[i++]);
+          //     html += `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">empty</td>`;
+          //     // console.log(html);
+          //   } else {
+          //     html += `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">${
+          //       singleResult[++em]
+          //     }</td>`;
+          //   }
+          // });
         }
         const ce = document.createElement("tr");
         ce.setAttribute("class", "odd:bg-gray-300");
-        ce.innerHTML = m;
+        ce.innerHTML = html;
         if (ce.innerHTML !== "") {
           tableInner += ce;
           table.append(ce);
         }
       });
-    } else {
+    }
+    // var data = new Uint8Array(e.target.result);
+    // var workbook = XLSX.read(data, {
+    //   type: "array",
+    // });
+    // var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    // // header: 1 instructs xlsx to create an 'array of arrays'
+    // var result = XLSX.utils.sheet_to_json(firstSheet, {
+    //   header: 1,
+    // });
+    // else if (
+    //   fileType.includes("text/csv")
+    //   //   fileType.includes(
+    //   //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    // ) {
+    //   // table.innerText = "";
+    //   // console.log(result);
+    //   // // let r = result.split("\n").map((e) => {
+    //   // //   return e.split(",");
+    //   // // });
+    //   // let max = -1;
+    //   // result.forEach((singleResult, index) => {
+    //   //   result.forEach((a, i) => {
+    //   //     if (a.length > max) {
+    //   //       max = a.length;
+    //   //     }
+    //   //   });
+    //   //   let m;
+    //   //   let html = "";
+    //   //   let temp = [...Array(max).keys()];
+    //   //   // console.log(singleResult);
+    //   //   if (index == 0) {
+    //   //     console.log(max);
+    //   //     temp.forEach((en) => {
+    //   //       if (singleResult[en]) {
+    //   //         html += `<th class ="border border-slate-600 p-3">${singleResult[en]}</th>`;
+    //   //       } else {
+    //   //         html += `<th class="border border-slate-600 p-3"></th>`;
+    //   //       }
+    //   //       console.log(singleResult[en]);
+    //   //     });
+    //   //     m = singleResult.map((e, i) => {
+    //   //       // if (temp.includes(i)) {
+    //   //       //   temp = temp.filter(function (item) {
+    //   //       //     return item !== i;
+    //   //       //   });
+    //   //       //   // console.log(temp, "Header");
+    //   //       // }
+    //   //       // console.log(e);
+    //   //       // console.log(i);
+    //   //       // if (e[i]) {
+    //   //       //   return `<th class ="border border-slate-600">${e}</th>`;
+    //   //       // } else {
+    //   //       //   return `<th class ="border border-slate-600">empty</th>`;
+    //   //       // }
+    //   //     });
+    //   //     // .join("");
+    //   //     // temp.map((em, i) => {
+    //   //     //   console.log(em);
+    //   //     //   // console.log(temp[++i]);
+    //   //     //   if (temp[++i] - em == 1) {
+    //   //     //     console.log(em);
+    //   //     //     // console.log(em - temp[i++]);
+    //   //     //     html += `<th class="border border-slate-600">empty</th>`;
+    //   //     //     // console.log(html);
+    //   //     //   } else {
+    //   //     //     html += `<th class ="border border-slate-600">${
+    //   //     //       singleResult[++em]
+    //   //     //     }</th>`;
+    //   //     //   }
+    //   //     // });
+    //   //     console.log(html);
+    //   //     console.log(temp);
+    //   //   } else {
+    //   //     // let temp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    //   //     m = singleResult.map((e, i) => {
+    //   //       // if (temp.includes(i)) {
+    //   //       //   temp = temp.filter(function (item) {
+    //   //       //     return item !== i;
+    //   //       //   });
+    //   //       //   // console.log(temp);
+    //   //       // }
+    //   //       // console.log(e);
+    //   //       // {
+    //   //       //   {
+    //   //       //     if (!e[i]) {
+    //   //       //       return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">empty</td>`;
+    //   //       //     } else {
+    //   //       //       return `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">${e}</td>`;
+    //   //       //     }
+    //   //       //   }
+    //   //       // }
+    //   //     });
+    //   //     // .join("");
+    //   //     // let temp = [...Array(max).keys()];
+    //   //     temp.forEach((en) => {
+    //   //       if (singleResult[en]) {
+    //   //         html += `<td onclick="handleClick(this)" id="${index}${en}" class ="border border-slate-600 p-3">${singleResult[en]}</td>`;
+    //   //       } else {
+    //   //         html += `<td onclick="handleClick(this)" id="${index}${en}" class ="border border-slate-600 p-3"></td>`;
+    //   //       }
+    //   //       console.log(singleResult[en]);
+    //   //     });
+    //   //     // temp.map((em, i) => {
+    //   //     //   console.log(em);
+    //   //     //   // console.log(temp[++i]);
+    //   //     //   if (temp[++i] - em == 1) {
+    //   //     //     console.log(em);
+    //   //     //     // console.log(em - temp[i++]);
+    //   //     //     html += `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">empty</td>`;
+    //   //     //     // console.log(html);
+    //   //     //   } else {
+    //   //     //     html += `<td onclick="handleClick(this)" id="${index}${i}" class ="border border-slate-600">${
+    //   //     //       singleResult[++em]
+    //   //     //     }</td>`;
+    //   //     //   }
+    //   //     // });
+    //   //   }
+    //   //   const ce = document.createElement("tr");
+    //   //   ce.setAttribute("class", "odd:bg-gray-300");
+    //   //   ce.innerHTML = html;
+    //   //   if (ce.innerHTML !== "") {
+    //   //     tableInner += ce;
+    //   //     table.append(ce);
+    //   //   }
+    //   // });
+    // }
+    else {
       table.innerHTML = `<p class="text-xl text-red-200">Upload Valid Type Data !!</p>`;
       //
       // console.log(data);
@@ -168,6 +395,9 @@ input.addEventListener("change", async () => {
   );
   a.setAttribute("id", "a");
   a.innerText = "Download";
-  a.setAttribute("onclick", "htmlToCsv()");
+  // a.setAttribute("onclick", "htmlTableToExcel('csv')");
+  a.setAttribute("onclick", "exportTableToExcel('table')");
+
+  // exportTableToExcel('tblData')
   document.getElementById("htmltocsv").append(a);
 });
