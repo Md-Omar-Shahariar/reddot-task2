@@ -1,4 +1,22 @@
+let col;
+let row;
+
 function ExportToExcel(type, fn, dl) {
+  console.log(col);
+  console.log(row);
+  for (j = col + 1; j < col + 2; j++) {
+    for (i = 0; i < row; i++) {
+      if (i == 0) {
+        console.log(i, j);
+        console.log(document.getElementById(`${i}${j}`));
+        console.log(document.getElementById(`${i}${j - 1}`));
+        document.getElementById(`${i}${j}`).innerText =
+          document.getElementById(`${i}${j - 1}`).innerText + " (Old Value)";
+      }
+      document.getElementById(`${i}${j - 1}`).style.display = "none";
+    }
+  }
+
   var elt = document.getElementById("table");
   var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
   return dl
@@ -148,9 +166,12 @@ input.addEventListener("change", async () => {
       // let r = result.split("\n").map((e) => {
       //   return e.split(",");
       // });
+
       let max = -1;
+      row = result.length;
 
       result.forEach((singleResult, index) => {
+        col = singleResult.length;
         result.forEach((a, i) => {
           if (a.length > max) {
             max = a.length;
@@ -163,14 +184,18 @@ input.addEventListener("change", async () => {
         // console.log(singleResult);
         if (index == 0) {
           console.log(max);
+
           temp.forEach((en) => {
             if (singleResult[en]) {
-              html += `<th class ="border border-slate-600 p-3">${singleResult[en]}</th>`;
+              html += `<th class id="${index}${en}" ="border border-slate-600 p-3">${singleResult[en]}</th>`;
             } else {
-              html += `<th class="border border-slate-600 p-3"></th>`;
+              html += `<th id="${index}${en}" class="border border-slate-600 p-3"></th>`;
             }
-            console.log(singleResult[en]);
+
+            // console.log(singleResult[en]);
           });
+          console.log(temp.length);
+          html += `<th id="${index}${temp.length}" class="border border-slate-600 p-3">New Value</th>`;
 
           m = singleResult.map((e, i) => {
             // if (temp.includes(i)) {
@@ -228,14 +253,20 @@ input.addEventListener("change", async () => {
           // .join("");
 
           // let temp = [...Array(max).keys()];
+          let num;
           temp.forEach((en) => {
+            num = en;
             if (singleResult[en]) {
-              html += `<td onclick="handleClick(this)" id="${index}${en}" class ="border border-slate-600 p-3">${singleResult[en]}</td>`;
+              html += `<td  id="${index}${en}" class ="border border-slate-600 p-3">${singleResult[en]}</td>`;
             } else {
-              html += `<td onclick="handleClick(this)" id="${index}${en}" class ="border border-slate-600 p-3"></td>`;
+              html += `<td  id="${index}${en}" class ="border border-slate-600 p-3"></td>`;
             }
+
             console.log(singleResult[en]);
           });
+          html += `<td onclick="handleClick(this)" id="${index}${
+            num + 1
+          }" class ="border border-slate-600 p-3"></td>`;
           // temp.map((em, i) => {
           //   console.log(em);
           //   // console.log(temp[++i]);
