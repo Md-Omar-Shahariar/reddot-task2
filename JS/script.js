@@ -1,8 +1,15 @@
 let col;
 let row;
 
+let dataFetch = [];
+const fetchData = async () => {
+  const response = await fetch("../data/data.json");
+  dataFetch = await response.json();
+};
+fetchData();
+
 function ExportToExcel(type, fn, dl) {
-  // console.log(col);
+  console.log(col);
   console.log(row);
   for (j = col + 1; j < col + 2; j++) {
     for (i = 0; i < row; i++) {
