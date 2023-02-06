@@ -1,41 +1,47 @@
 let col;
 let row;
-
 let dataFetch = [];
+// const value = (index) => {
+//   return dataFetch.filter((data) => {
+//     data[index];
+//   });
+// };
 const fetchData = async () => {
   const response = await fetch("../data/data.json");
   dataFetch = await response.json();
+  console.log(dataFetch);
 };
 fetchData();
+// console.log(dataFetch[2].id);
 
 function ExportToExcel(type, fn, dl) {
-  console.log(col);
+  // console.log(col);
   console.log(row);
-  for (j = col + 1; j < col + 2; j++) {
-    for (i = 0; i < row; i++) {
-      if (i == 0) {
-        // console.log(i, j);
-        // console.log(document.getElementById(`${i}${j}`));
-        // console.log(document.getElementById(`${i}${j - 1}`));
-        document.getElementById(`${i}${j}`).innerText =
-          document.getElementById(`${i}${j - 1}`).innerText + " (Old Value)";
-      } else {
-        console.log(document.getElementById(`${i}${j}`).innerText);
-        if (!document.getElementById(`${i}${j}`).innerText) {
-          document.getElementById(`${i}${j}`).innerText =
-            document.getElementById(`${i}${j - 1}`).innerText;
-        }
-        // if (!document.getElementById(`${i}${j}`).value) {
-        //   document.getElementById(`${i}${j}`).innerText =
-        //     document.getElementById(`${i}${j - 1}`).innerText;
-        // } else {
-        //   document.getElementById(`${i}${j}`).innerText =
-        //     document.getElementById(`${i}${j - 1}`).innerText;
-        // }
-      }
-      document.getElementById(`${i}${j - 1}`).style.display = "none";
-    }
-  }
+  // for (j = col + 1; j < col + 2; j++) {
+  //   for (i = 0; i < row; i++) {
+  //     if (i == 0) {
+  //       // console.log(i, j);
+  //       // console.log(document.getElementById(`${i}${j}`));
+  //       // console.log(document.getElementById(`${i}${j - 1}`));
+  //       document.getElementById(`${i}${j}`).innerText =
+  //         document.getElementById(`${i}${j - 1}`).innerText + " (Old Value)";
+  //     } else {
+  //       console.log(document.getElementById(`${i}${j}`).innerText);
+  //       if (!document.getElementById(`${i}${j}`).innerText) {
+  //         document.getElementById(`${i}${j}`).innerText =
+  //           document.getElementById(`${i}${j - 1}`).innerText;
+  //       }
+  //       // if (!document.getElementById(`${i}${j}`).value) {
+  //       //   document.getElementById(`${i}${j}`).innerText =
+  //       //     document.getElementById(`${i}${j - 1}`).innerText;
+  //       // } else {
+  //       //   document.getElementById(`${i}${j}`).innerText =
+  //       //     document.getElementById(`${i}${j - 1}`).innerText;
+  //       // }
+  //     }
+  //     document.getElementById(`${i}${j - 1}`).style.display = "none";
+  //   }
+  // }
 
   var elt = document.getElementById("table");
   var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
@@ -204,19 +210,46 @@ input.addEventListener("change", async () => {
         // console.log(singleResult);
         if (index == 0) {
           console.log(max);
+          let en1;
 
-          temp.forEach((en) => {
+          temp.forEach((en, i) => {
             if (singleResult[en]) {
-              html += `<th class id="${index}${en}" ="border border-slate-600 p-3">${singleResult[en]}</th>`;
+              if (i == temp.length - 1) {
+                html += `<th id="${index}${en}" class="border border-slate-600 p-3">${
+                  singleResult[en]
+                }</th>
+                <th id="${index}${
+                  en + 1
+                }" class="border border-slate-600 p-3">${
+                  singleResult[en]
+                }(New Value)</th>`;
+              } else {
+                html += `<th id="${index}${en}" class="border border-slate-600 p-3">${singleResult[en]}</th>`;
+              }
             } else {
-              html += `<th id="${index}${en}" class="border border-slate-600 p-3"></th>`;
+              if (i == temp.length - 1) {
+                html += `<th id="${index}${en}" class="border border-slate-600 p-3"></th>
+                <th id="${index}${
+                  en + 1
+                }" class="border border-slate-600 p-3"></th>`;
+              } else {
+                html += `<th id="${index}${
+                  en + 1
+                }" class="border border-slate-600 p-3"></th>`;
+              }
             }
 
             // console.log(singleResult[en]);
           });
-          // console.log(temp.length);
-          html += `<th id="${index}${temp.length}" class="border border-slate-600 p-3">New Value</th>`;
 
+          // html += `<th id="${index}${
+          //   temp.length
+          // }" class="border border-slate-600 p-3">${
+          //   document.getElementById(`${index}${temp.length - 1}`)?.innerText
+          // }(New Value)</th>`;
+          // console.log();
+
+          // console.log(temp.length);
           m = singleResult.map((e, i) => {
             // if (temp.includes(i)) {
             //   temp = temp.filter(function (item) {
@@ -286,7 +319,9 @@ input.addEventListener("change", async () => {
           });
           html += `<td onclick="handleClick(this)" id="${index}${
             num + 1
-          }" class ="border border-slate-600 p-3"></td>`;
+          }" class ="border border-slate-600 p-3">${
+            dataFetch[index - 1].value
+          }</td>`;
           // temp.map((em, i) => {
           //   console.log(em);
           //   // console.log(temp[++i]);
