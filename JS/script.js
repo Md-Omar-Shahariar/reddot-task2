@@ -2,16 +2,29 @@ let col;
 let row;
 
 function ExportToExcel(type, fn, dl) {
-  console.log(col);
+  // console.log(col);
   console.log(row);
   for (j = col + 1; j < col + 2; j++) {
     for (i = 0; i < row; i++) {
       if (i == 0) {
-        console.log(i, j);
-        console.log(document.getElementById(`${i}${j}`));
-        console.log(document.getElementById(`${i}${j - 1}`));
+        // console.log(i, j);
+        // console.log(document.getElementById(`${i}${j}`));
+        // console.log(document.getElementById(`${i}${j - 1}`));
         document.getElementById(`${i}${j}`).innerText =
           document.getElementById(`${i}${j - 1}`).innerText + " (Old Value)";
+      } else {
+        console.log(document.getElementById(`${i}${j}`).innerText);
+        if (!document.getElementById(`${i}${j}`).innerText) {
+          document.getElementById(`${i}${j}`).innerText =
+            document.getElementById(`${i}${j - 1}`).innerText;
+        }
+        // if (!document.getElementById(`${i}${j}`).value) {
+        //   document.getElementById(`${i}${j}`).innerText =
+        //     document.getElementById(`${i}${j - 1}`).innerText;
+        // } else {
+        //   document.getElementById(`${i}${j}`).innerText =
+        //     document.getElementById(`${i}${j - 1}`).innerText;
+        // }
       }
       document.getElementById(`${i}${j - 1}`).style.display = "none";
     }
@@ -106,7 +119,7 @@ const handleBlur = (event) => {
   }
 
   const id = event.id.slice(0, event.id.length - 1);
-  console.log(id);
+  // console.log(id);
 
   // console.log(event);
   const data = document.getElementById(`${id}`);
@@ -131,7 +144,7 @@ const handleClick = async (event) => {
   data.removeAttribute("onclick");
 
   data.innerHTML = `<input id="${id}i" onblur="handleBlur(this)" type="text"/>`;
-  console.log(data);
+  // console.log(data);
   // select(id);
 };
 
@@ -194,7 +207,7 @@ input.addEventListener("change", async () => {
 
             // console.log(singleResult[en]);
           });
-          console.log(temp.length);
+          // console.log(temp.length);
           html += `<th id="${index}${temp.length}" class="border border-slate-600 p-3">New Value</th>`;
 
           m = singleResult.map((e, i) => {
@@ -228,8 +241,8 @@ input.addEventListener("change", async () => {
           //   }
           // });
 
-          console.log(html);
-          console.log(temp);
+          // console.log(html);
+          // console.log(temp);
         } else {
           // let temp = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
           m = singleResult.map((e, i) => {
@@ -262,7 +275,7 @@ input.addEventListener("change", async () => {
               html += `<td  id="${index}${en}" class ="border border-slate-600 p-3"></td>`;
             }
 
-            console.log(singleResult[en]);
+            // console.log(singleResult[en]);
           });
           html += `<td onclick="handleClick(this)" id="${index}${
             num + 1
