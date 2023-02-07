@@ -6,8 +6,28 @@ let dataFetch = [];
 //     data[index];
 //   });
 // };
+const fetchJson = (dataFetch, index) => {
+  let val;
+  dataFetch.forEach((data) => {
+    console.log(data.id);
+    if (data.id == index - 1) {
+      val = data.value;
+    }
+  });
+  // console.log(dataFetch);
+  // const data = Object.keys(dataFetch).filter((data) => {
+  //   if (data == index - 1) {
+  //     console.log(data);
+  //   }
+  // });
+  // console.log(data);
+  // const data = dataFetch.k.filter((data) => {
+  //   data.keys == index - 1;
+  // });
+  return val;
+};
 const fetchData = async () => {
-  const response = await fetch("../data/data.json");
+  const response = await fetch("../data/data2.json");
   dataFetch = await response.json();
   console.log(dataFetch);
 };
@@ -17,31 +37,32 @@ fetchData();
 function ExportToExcel(type, fn, dl) {
   // console.log(col);
   console.log(row);
-  // for (j = col + 1; j < col + 2; j++) {
-  //   for (i = 0; i < row; i++) {
-  //     if (i == 0) {
-  //       // console.log(i, j);
-  //       // console.log(document.getElementById(`${i}${j}`));
-  //       // console.log(document.getElementById(`${i}${j - 1}`));
-  //       document.getElementById(`${i}${j}`).innerText =
-  //         document.getElementById(`${i}${j - 1}`).innerText + " (Old Value)";
-  //     } else {
-  //       console.log(document.getElementById(`${i}${j}`).innerText);
-  //       if (!document.getElementById(`${i}${j}`).innerText) {
-  //         document.getElementById(`${i}${j}`).innerText =
-  //           document.getElementById(`${i}${j - 1}`).innerText;
-  //       }
-  //       // if (!document.getElementById(`${i}${j}`).value) {
-  //       //   document.getElementById(`${i}${j}`).innerText =
-  //       //     document.getElementById(`${i}${j - 1}`).innerText;
-  //       // } else {
-  //       //   document.getElementById(`${i}${j}`).innerText =
-  //       //     document.getElementById(`${i}${j - 1}`).innerText;
-  //       // }
-  //     }
-  //     document.getElementById(`${i}${j - 1}`).style.display = "none";
-  //   }
-  // }
+  for (j = col + 1; j < col + 2; j++) {
+    for (i = 0; i < row; i++) {
+      if (i == 0) {
+        // console.log(i, j);
+        // console.log(document.getElementById(`${i}${j}`));
+        // console.log(document.getElementById(`${i}${j - 1}`));
+        document.getElementById(`${i}${j}`).innerText = document.getElementById(
+          `${i}${j - 1}`
+        ).innerText;
+      } else {
+        console.log(document.getElementById(`${i}${j}`).innerText);
+        if (!document.getElementById(`${i}${j}`).innerText) {
+          document.getElementById(`${i}${j}`).innerText =
+            document.getElementById(`${i}${j - 1}`).innerText;
+        }
+        // if (!document.getElementById(`${i}${j}`).value) {
+        //   document.getElementById(`${i}${j}`).innerText =
+        //     document.getElementById(`${i}${j - 1}`).innerText;
+        // } else {
+        //   document.getElementById(`${i}${j}`).innerText =
+        //     document.getElementById(`${i}${j - 1}`).innerText;
+        // }
+      }
+      document.getElementById(`${i}${j - 1}`).style.display = "none";
+    }
+  }
 
   var elt = document.getElementById("table");
   var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
@@ -317,10 +338,11 @@ input.addEventListener("change", async () => {
 
             // console.log(singleResult[en]);
           });
+          // const val = fetchJson(dataFetch, index);
           html += `<td onclick="handleClick(this)" id="${index}${
             num + 1
           }" class ="border border-slate-600 p-3">${
-            dataFetch[index - 1].value
+            dataFetch[index - 1] ? dataFetch[index - 1] : ""
           }</td>`;
           // temp.map((em, i) => {
           //   console.log(em);
